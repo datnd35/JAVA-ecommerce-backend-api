@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home/bin/java -version)",
+      "Bash(/opt/homebrew/opt/openjdk@26/libexec/openjdk.jdk/Contents/Home/bin/java -version)",
+      "Bash(rm -rf /tmp/jtest)",
+      "Bash(/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home/bin/javac -d /tmp/jtest src/main/java/com/myshop/Main.java)",
+      "Bash(/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home/bin/java -cp /tmp/jtest com.myshop.Main)"
+    ]
+  }
+}
