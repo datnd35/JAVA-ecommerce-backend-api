@@ -17,3 +17,12 @@ mybatis-plus:
       logic-delete-field: deleteFlag
       logic-delete-value: 1
       logic-not-delete-value: 0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
