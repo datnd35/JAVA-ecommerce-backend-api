@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: myshop-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: myshop_manager
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - myshop-mysql-data:/var/lib/mysql
+
+volumes:
+  myshop-mysql-data:
