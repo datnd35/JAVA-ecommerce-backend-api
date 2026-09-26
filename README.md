@@ -65,6 +65,11 @@ App chạy tại:
 - `http://localhost:8080/actuator/metrics`
 - `http://localhost:8080/actuator/prometheus`
 
+### Swagger/OpenAPI
+
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+
 ## 5) Chạy monitoring stack (Prometheus + Grafana)
 
 Tại root project:

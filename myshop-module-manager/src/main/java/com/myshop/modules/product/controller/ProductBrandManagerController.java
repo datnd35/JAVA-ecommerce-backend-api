@@ -50,6 +50,8 @@ public class ProductBrandManagerController {
         return productBrandService.disable(id, disable);
     }
 
+
+    
     @DeleteMapping("/{ids}")
     public boolean delete(
             @PathVariable String ids) {
