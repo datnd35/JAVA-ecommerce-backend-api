@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 1122
 
 spring:
   datasource:
@@ -26,3 +26,9 @@ management:
   endpoint:
     health:
       show-details: never
+  metrics:
+    tags:
+      application: myshop-module-manager
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
