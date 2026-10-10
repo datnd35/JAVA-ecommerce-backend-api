@@ -7,6 +7,7 @@
 ## 1) Hiện trạng project (đã đối chiếu code hiện tại)
 
 - Multi-module Maven:
+
   - `myshop-framework` (entity/mapper/service)
   - `myshop-module-manager` (Spring Boot API)
 - Có MySQL + Prometheus + Grafana trong `docker-compose.yml`

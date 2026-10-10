@@ -8,7 +8,7 @@ services:
       MYSQL_DATABASE: myshop_manager
 
     ports:
-      - "3306:3306"
+      - "3307:3306"
 
     volumes:
       - myshop-mysql-data:/var/lib/mysql
@@ -21,6 +21,21 @@ services:
     volumes:
       - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: myshop-node-exporter
+    ports:
+      - "9100:9100"
+    command:
+      - "--path.procfs=/host/proc"
+      - "--path.sysfs=/host/sys"
+      - "--path.rootfs=/rootfs"
+      - "--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($|/)"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
 
   grafana:
     image: grafana/grafana:latest

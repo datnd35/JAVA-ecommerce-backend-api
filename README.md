@@ -3,13 +3,14 @@
 Backend API cho hệ thống ecommerce theo kiến trúc multi-module Maven:
 
 - `myshop-framework`: module dùng chung (entity/mapper/service core)
-- `myshop-module-manager`: Spring Boot app chạy API manager (port `8080`)
+- `myshop-module-manager`: Spring Boot app chạy API manager (port `1122`)
 
 Project đã tích hợp monitoring với:
 
 - Spring Boot Actuator + Micrometer Prometheus
 - Prometheus (Docker, port `9090`)
 - Grafana (Docker, port `3000`)
+- Node Exporter (Docker, port `9100`)
 
 ## 1) Yêu cầu môi trường
 
@@ -56,7 +57,7 @@ mvn spring-boot:run -pl myshop-module-manager
 
 App chạy tại:
 
-- `http://localhost:8080`
+- `http://localhost:1122`
 
 ### Actuator endpoints đã expose
 
@@ -64,11 +65,15 @@ App chạy tại:
 - `http://localhost:8080/actuator/info`
 - `http://localhost:8080/actuator/metrics`
 - `http://localhost:8080/actuator/prometheus`
+- `http://localhost:1122/actuator/health`
+- `http://localhost:1122/actuator/info`
+- `http://localhost:1122/actuator/metrics`
+- `http://localhost:1122/actuator/prometheus`
 
 ### Swagger/OpenAPI
 
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-- OpenAPI JSON: `http://localhost:8080/v3/api-docs`
+- Swagger UI: `http://localhost:1122/swagger-ui/index.html`
+- OpenAPI JSON: `http://localhost:1122/v3/api-docs`
 
 ## 5) Chạy monitoring stack (Prometheus + Grafana)
 
@@ -84,15 +89,21 @@ Services:
 
 - Prometheus: `http://localhost:9090`
 - Grafana: `http://localhost:3000`
+- Node Exporter: `http://localhost:9100/metrics`
 - MySQL: `localhost:3306`
 
 ## 6) Cấu hình scrape Prometheus
 
 File: `monitoring/prometheus/prometheus.yml`
 
-- scrape interval: `15s`
-- target app: `host.docker.internal:8080`
+- scrape interval: `10s`
+- target app: `host.docker.internal:1122`
 - metrics path: `/actuator/prometheus`
+
+Thêm target Node Exporter:
+
+- job: `node`
+- target: `node-exporter:9100`
 
 Lý do dùng `host.docker.internal`: Spring Boot app chạy trên **host**, Prometheus chạy trong **Docker container**.
 
@@ -113,8 +124,8 @@ Sau khi `docker compose up -d`, vào Grafana để kiểm tra datasource đã xu
 ### 8.1 Verify Actuator
 
 ```bash
-curl http://localhost:8080/actuator/health
-curl http://localhost:8080/actuator/prometheus
+curl http://localhost:1122/actuator/health
+curl http://localhost:1122/actuator/prometheus
 ```
 
 Endpoint prometheus phải trả về text metrics dạng:
@@ -129,7 +140,7 @@ Endpoint prometheus phải trả về text metrics dạng:
 
 1. Mở `http://localhost:9090`
 2. Vào `Status` → `Targets`
-3. Target `myshop-module-manager` phải ở trạng thái `UP`
+3. Target `myshop-module-manager` và `node` phải ở trạng thái `UP`
 
 ### 8.3 Verify Grafana
 
@@ -137,6 +148,18 @@ Endpoint prometheus phải trả về text metrics dạng:
 2. Đăng nhập Grafana
 3. Vào `Connections` / `Data Sources`
 4. Kiểm tra datasource `Prometheus` đã có và `Save & test` thành công
+
+### 8.4 Setup dashboard Node Exporter Full (ID `1860`)
+
+1. Trong Grafana chọn `Dashboards` → `New` → `Import`
+2. Nhập dashboard ID: `1860`
+3. Chọn datasource: `Prometheus`
+4. Bấm `Import`
+
+Sau khi import, chọn biến:
+
+- `job`: `node`
+- `instance`: `node-exporter:9100`
 
 ## 9) Xem logs monitoring
 
@@ -166,7 +189,73 @@ docker compose down -v
 ## 11) Lưu ý
 
 - Không cần đổi port mặc định:
-  - App: `8080`
+  - App: `1122`
   - Prometheus: `9090`
   - Grafana: `3000`
+  - Node Exporter: `9100`
 - Monitoring được bổ sung mà không thay đổi business logic API hiện tại.
+
+Thêm đoạn ngắn này vào README:
+
+````markdown
+## 12) Load Testing với wrk
+
+Cài đặt:
+
+```bash
+brew install wrk
+```
+
+Chạy load test:
+
+```bash
+wrk -t4 -c100 -d30s http://localhost:1122/ticket/1/detail
+```
+
+- `-t4`: 4 threads
+- `-c100`: 100 concurrent connections
+- `-d30s`: chạy trong 30 giây
+
+Tăng tải để kiểm tra giới hạn:
+
+```bash
+wrk -t4 -c50  -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c100 -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c200 -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c500 -d30s http://localhost:1122/ticket/1/detail
+```
+
+Theo dõi `Latency`, `Requests/sec`, `Non-2xx/3xx` và CPU/Memory/DB trên Grafana.
+````
+
+Sau đó đổi các mục phía dưới từ **9, 10, 11** thành **10, 11, 12**.
+
+```
+
+```
+
+Chạy load test:
+
+```bash
+wrk -t4 -c100 -d30s http://localhost:1122/ticket/1/detail
+```
+
+- `-t4`: 4 threads
+- `-c100`: 100 concurrent connections
+- `-d30s`: chạy trong 30 giây
+
+Tăng tải để kiểm tra giới hạn:
+
+```bash
+wrk -t4 -c50  -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c100 -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c200 -d30s http://localhost:1122/ticket/1/detail
+wrk -t4 -c500 -d30s http://localhost:1122/ticket/1/detail
+```
+
+Theo dõi `Latency`, `Requests/sec`, `Non-2xx/3xx` và CPU/Memory/DB trên Grafana.
+
+```
+
+Sau đó đổi các mục phía dưới từ **9, 10, 11** thành **10, 11, 12**.
+```
