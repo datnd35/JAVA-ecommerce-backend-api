@@ -72,8 +72,31 @@ App chạy tại:
 
 ### Swagger/OpenAPI
 
-- Swagger UI: `http://localhost:1122/swagger-ui/index.html`
-- OpenAPI JSON: `http://localhost:1122/v3/api-docs`
+> Mỗi service Spring Boot (`myshop-module-manager`, `myshop-media-service`,
+> `myshop-ai-evaluation-service`...) là 1 process/JAR **độc lập**, chạy port
+> riêng và có Swagger UI riêng. Service nào **chưa được start** thì Swagger UI
+> của nó sẽ không truy cập được — phải `mvn spring-boot:run -pl <module>`
+> trước.
+
+| Service                                  | Port   | Swagger UI                                    | OpenAPI JSON                        |
+| ---------------------------------------- | ------ | --------------------------------------------- | ----------------------------------- |
+| `myshop-module-manager`                  | `1122` | `http://localhost:1122/swagger-ui/index.html` | `http://localhost:1122/v3/api-docs` |
+| `myshop-media-service` (Phase 1)         | `8081` | `http://localhost:8081/swagger-ui/index.html` | `http://localhost:8081/v3/api-docs` |
+| `myshop-media-worker` (Phase 1)          | `8082` | _(consumer only, không có REST API/Swagger)_  | -                                   |
+| `myshop-ai-evaluation-service` (Phase 2) | `8083` | `http://localhost:8083/swagger-ui/index.html` | `http://localhost:8083/v3/api-docs` |
+
+Chạy từng service (mỗi service 1 terminal riêng):
+
+```bash
+mvn spring-boot:run -pl myshop-module-manager
+mvn spring-boot:run -pl myshop-media-service -am
+mvn spring-boot:run -pl myshop-media-worker -am
+mvn spring-boot:run -pl myshop-ai-evaluation-service -am
+```
+
+> Lưu ý: `myshop-media-service`/`myshop-media-worker` cần `media-postgres` +
+> `media-rabbitmq` đang chạy (xem mục 5); `myshop-ai-evaluation-service` cần
+> `ai-postgres` đang chạy — tất cả đã có sẵn trong `docker-compose.yml`.
 
 ## 5) Chạy monitoring stack (Prometheus + Grafana)
 

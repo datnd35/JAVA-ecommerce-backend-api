@@ -49,6 +49,24 @@ services:
     volumes:
       - myshop-media-rabbitmq-data:/var/lib/rabbitmq
 
+  # Dedicated Postgres instance for the new AI Evaluation bounded context
+  # (myshop-ai-evaluation-service), Phase 2 — same "own schema per service" rule applied to Media
+  # above, per docs/architecture/04-database-and-event-strategy.md.
+  ai-postgres:
+    image: postgres:16-alpine
+    container_name: myshop-ai-postgres
+
+    environment:
+      POSTGRES_DB: myshop_ai
+      POSTGRES_USER: myshop_ai
+      POSTGRES_PASSWORD: myshop_ai
+
+    ports:
+      - "5434:5432"
+
+    volumes:
+      - myshop-ai-postgres-data:/var/lib/postgresql/data
+
   prometheus:
     image: prom/prometheus:latest
     container_name: myshop-prometheus
@@ -86,5 +104,6 @@ volumes:
   myshop-mysql-data:
   myshop-media-postgres-data:
   myshop-media-rabbitmq-data:
+  myshop-ai-postgres-data:
   prometheus-data:
   grafana-data:

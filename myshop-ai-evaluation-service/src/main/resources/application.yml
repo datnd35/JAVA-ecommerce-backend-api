@@ -1,0 +1,27 @@
+server:
+  port: 8083
+
+spring:
+  application:
+    name: myshop-ai-evaluation-service
+  datasource:
+    url: jdbc:postgresql://localhost:5434/myshop_ai
+    username: myshop_ai
+    password: myshop_ai
+  jpa:
+    hibernate:
+      # TEMPORARY for Phase 2 scaffolding — replace with Flyway/Liquibase before production use.
+      ddl-auto: update
+    open-in-view: false
+
+ai-evaluation:
+  provider:
+    timeout: 10s
+    max-attempts: 3
+    daily-quota-per-user: 100
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus

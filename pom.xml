@@ -36,6 +36,7 @@
         <module>myshop-media-common</module>
         <module>myshop-media-service</module>
         <module>myshop-media-worker</module>
+        <module>myshop-ai-evaluation-service</module>
     </modules>
 
 </project>
