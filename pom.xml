@@ -33,6 +33,9 @@
     <modules>
         <module>myshop-framework</module>
         <module>myshop-module-manager</module>
+        <module>myshop-media-common</module>
+        <module>myshop-media-service</module>
+        <module>myshop-media-worker</module>
     </modules>
 
 </project>

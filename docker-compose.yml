@@ -13,6 +13,42 @@ services:
     volumes:
       - myshop-mysql-data:/var/lib/mysql
 
+  # Dedicated Postgres instance for the new Media bounded context (myshop-media-service /
+  # myshop-media-worker). Deliberately NOT shared with the MySQL instance above, per
+  # docs/architecture/01-current-state-assessment.md §4 (Option A: new services keep their own
+  # schema/engine rather than forcing Open4Talk's data model onto MySQL/MyBatis-Plus).
+  media-postgres:
+    image: postgres:16-alpine
+    container_name: myshop-media-postgres
+
+    environment:
+      POSTGRES_DB: myshop_media
+      POSTGRES_USER: myshop_media
+      POSTGRES_PASSWORD: myshop_media
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - myshop-media-postgres-data:/var/lib/postgresql/data
+
+  # RabbitMQ for Media ingestion events (MediaIngestionRequested/Completed/Failed) — see
+  # docs/architecture/05-technology-stack-decisions.md ("Messaging: RabbitMQ").
+  media-rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: myshop-media-rabbitmq
+
+    environment:
+      RABBITMQ_DEFAULT_USER: myshop
+      RABBITMQ_DEFAULT_PASS: myshop
+
+    ports:
+      - "5673:5672"
+      - "15673:15672"
+
+    volumes:
+      - myshop-media-rabbitmq-data:/var/lib/rabbitmq
+
   prometheus:
     image: prom/prometheus:latest
     container_name: myshop-prometheus
@@ -48,5 +84,7 @@ services:
 
 volumes:
   myshop-mysql-data:
+  myshop-media-postgres-data:
+  myshop-media-rabbitmq-data:
   prometheus-data:
   grafana-data:

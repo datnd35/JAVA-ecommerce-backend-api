@@ -9,6 +9,18 @@ scrape_configs:
       - targets:
           - 'host.docker.internal:1122'
 
+  - job_name: 'myshop-media-service'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:8081'
+
+  - job_name: 'myshop-media-worker'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets:
+          - 'host.docker.internal:8082'
+
   - job_name: 'node'
     static_configs:
       - targets:

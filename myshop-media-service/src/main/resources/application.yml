@@ -1,0 +1,43 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: myshop-media-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/myshop_media
+    username: myshop_media
+    password: myshop_media
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Phase 1 scaffolding convenience only. MUST switch to Flyway/Liquibase-managed migrations
+      # before any shared/staging environment use — see docs/architecture/04-database-and-event-strategy.md.
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false
+
+  rabbitmq:
+    host: localhost
+    port: 5673
+    username: myshop
+    password: myshop
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: never
+  metrics:
+    tags:
+      application: myshop-media-service
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
