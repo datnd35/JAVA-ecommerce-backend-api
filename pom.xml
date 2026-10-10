@@ -18,8 +18,14 @@
 
     <!-- Project information -->
     <groupId>com.myshop</groupId>
-    <artifactId>JAVA-ecommerce-backend-api-MEMBER</artifactId>
+    <artifactId>lumora-platform</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <name>Lumora Platform</name>
+    <description>
+        Lumora — Java/Spring Boot microservices platform (migrated from Open4Talk), formerly
+        "JAVA-ecommerce-backend-api-MEMBER". groupId com.myshop and Java package names are kept
+        unchanged in this rename pass; only the project/module/folder naming was updated.
+    </description>
 
     <!-- Root project = aggregator -->
     <packaging>pom</packaging>
@@ -31,12 +37,12 @@
 
     <!-- Modules -->
     <modules>
-        <module>myshop-framework</module>
-        <module>myshop-module-manager</module>
-        <module>myshop-media-common</module>
-        <module>myshop-media-service</module>
-        <module>myshop-media-worker</module>
-        <module>myshop-ai-evaluation-service</module>
+        <module>lumora-framework</module>
+        <module>lumora-module-manager</module>
+        <module>lumora-media-common</module>
+        <module>lumora-media-service</module>
+        <module>lumora-media-worker</module>
+        <module>lumora-ai-evaluation-service</module>
     </modules>
 
 </project>

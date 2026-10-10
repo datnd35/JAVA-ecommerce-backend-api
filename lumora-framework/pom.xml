@@ -11,12 +11,12 @@
     <!-- Parent -->
     <parent>
         <groupId>com.myshop</groupId>
-        <artifactId>JAVA-ecommerce-backend-api-MEMBER</artifactId>
+        <artifactId>lumora-platform</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <!-- Module -->
-    <artifactId>myshop-framework</artifactId>
+    <artifactId>lumora-framework</artifactId>
     <packaging>jar</packaging>
 
     <!-- Dependencies -->

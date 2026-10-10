@@ -11,7 +11,7 @@
     <!-- Parent -->
     <parent>
         <groupId>com.myshop</groupId>
-        <artifactId>JAVA-ecommerce-backend-api-MEMBER</artifactId>
+        <artifactId>lumora-platform</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -21,7 +21,7 @@
         shared kernel (JPA entity + event contracts) owned by the Media bounded context,
         NOT a cross-service shared-entity library. No other service module may depend on this.
     -->
-    <artifactId>myshop-media-common</artifactId>
+    <artifactId>lumora-media-common</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

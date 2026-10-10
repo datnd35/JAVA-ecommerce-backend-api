@@ -10,7 +10,7 @@
 
     <parent>
         <groupId>com.myshop</groupId>
-        <artifactId>JAVA-ecommerce-backend-api-MEMBER</artifactId>
+        <artifactId>lumora-platform</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
@@ -22,7 +22,7 @@
         rationale: long-running native process work must not share a Cloud Run/HTTP-style
         lifecycle with the synchronous API).
     -->
-    <artifactId>myshop-media-worker</artifactId>
+    <artifactId>lumora-media-worker</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>com.myshop</groupId>
-            <artifactId>myshop-media-common</artifactId>
+            <artifactId>lumora-media-common</artifactId>
             <version>${project.version}</version>
         </dependency>
 

@@ -10,16 +10,18 @@
 
     <parent>
         <groupId>com.myshop</groupId>
-        <artifactId>JAVA-ecommerce-backend-api-MEMBER</artifactId>
+        <artifactId>lumora-platform</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <!--
-        Media Service: synchronous REST API only (accept ingestion requests, report status,
-        engagement endpoints). Long-running ffmpeg/yt-dlp work is deliberately NOT here — see
-        myshop-media-worker — per docs/architecture/06-migration-roadmap.md Phase 1.
+        AI Evaluation Service: per docs/architecture/03-service-boundaries-and-ownership.md
+        ("AI Evaluation Service"). Owns AiPromptTemplate/UserPromptCache + evaluation results;
+        isolates external AI provider calls (OpenAI/Anthropic/Azure Speech) behind adapter
+        interfaces so timeout/retry/quota policy can be applied uniformly and providers can be
+        swapped/mocked independently. See docs/architecture/06-migration-roadmap.md Phase 2.
     -->
-    <artifactId>myshop-media-service</artifactId>
+    <artifactId>lumora-ai-evaluation-service</artifactId>
     <packaging>jar</packaging>
 
     <properties>
@@ -29,20 +31,18 @@
     <dependencies>
 
         <dependency>
-            <groupId>com.myshop</groupId>
-            <artifactId>myshop-media-common</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
         <dependency>
@@ -56,6 +56,18 @@
         </dependency>
 
         <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>2.8.13</version>
@@ -65,12 +77,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.amqp</groupId>
-            <artifactId>spring-rabbit-test</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -91,13 +97,6 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>rabbitmq</artifactId>
             <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>

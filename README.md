@@ -1,9 +1,19 @@
-# JAVA-ecommerce-backend-api-MEMBER
+# Lumora Platform
 
-Backend API cho hệ thống ecommerce theo kiến trúc multi-module Maven:
+> Tên trước đây: `JAVA-ecommerce-backend-api-MEMBER`. Đã đổi tên dự án thành
+> **Lumora** cùng toàn bộ folder module (`myshop-*` → `lumora-*`). `groupId`
+> Maven (`com.myshop`) và package Java (`com.myshop.*`) **chưa đổi** trong lần
+> rename này — chỉ đổi tên hiển thị dự án + artifactId + tên folder.
 
-- `myshop-framework`: module dùng chung (entity/mapper/service core)
-- `myshop-module-manager`: Spring Boot app chạy API manager (port `1122`)
+Backend API nền tảng Lumora (migrate từ Open4Talk) theo kiến trúc multi-module Maven /
+microservices:
+
+- `lumora-framework`: module dùng chung (entity/mapper/service core)
+- `lumora-module-manager`: Spring Boot app chạy API manager (port `1122`)
+- `lumora-media-common`: domain/event/messaging dùng chung cho Media
+- `lumora-media-service`: REST API ingest media (port `8081`)
+- `lumora-media-worker`: consumer xử lý transcode media (port `8082`)
+- `lumora-ai-evaluation-service`: AI Evaluation (Grammar/Pronunciation...) (port `8083`)
 
 Project đã tích hợp monitoring với:
 
@@ -32,8 +42,8 @@ Project đã tích hợp monitoring với:
 │       └── provisioning/
 │           └── datasources/
 │               └── prometheus.yml
-├── myshop-framework/
-└── myshop-module-manager/
+├── lumora-framework/
+└── lumora-module-manager/
 		└── src/main/resources/application.yml
 ```
 
@@ -52,7 +62,7 @@ Nếu build thành công, bạn sẽ thấy `BUILD SUCCESS`.
 Chạy module manager:
 
 ```bash
-mvn spring-boot:run -pl myshop-module-manager
+mvn spring-boot:run -pl lumora-module-manager
 ```
 
 App chạy tại:
@@ -72,30 +82,30 @@ App chạy tại:
 
 ### Swagger/OpenAPI
 
-> Mỗi service Spring Boot (`myshop-module-manager`, `myshop-media-service`,
-> `myshop-ai-evaluation-service`...) là 1 process/JAR **độc lập**, chạy port
+> Mỗi service Spring Boot (`lumora-module-manager`, `lumora-media-service`,
+> `lumora-ai-evaluation-service`...) là 1 process/JAR **độc lập**, chạy port
 > riêng và có Swagger UI riêng. Service nào **chưa được start** thì Swagger UI
 > của nó sẽ không truy cập được — phải `mvn spring-boot:run -pl <module>`
 > trước.
 
 | Service                                  | Port   | Swagger UI                                    | OpenAPI JSON                        |
 | ---------------------------------------- | ------ | --------------------------------------------- | ----------------------------------- |
-| `myshop-module-manager`                  | `1122` | `http://localhost:1122/swagger-ui/index.html` | `http://localhost:1122/v3/api-docs` |
-| `myshop-media-service` (Phase 1)         | `8081` | `http://localhost:8081/swagger-ui/index.html` | `http://localhost:8081/v3/api-docs` |
-| `myshop-media-worker` (Phase 1)          | `8082` | _(consumer only, không có REST API/Swagger)_  | -                                   |
-| `myshop-ai-evaluation-service` (Phase 2) | `8083` | `http://localhost:8083/swagger-ui/index.html` | `http://localhost:8083/v3/api-docs` |
+| `lumora-module-manager`                  | `1122` | `http://localhost:1122/swagger-ui/index.html` | `http://localhost:1122/v3/api-docs` |
+| `lumora-media-service` (Phase 1)         | `8081` | `http://localhost:8081/swagger-ui/index.html` | `http://localhost:8081/v3/api-docs` |
+| `lumora-media-worker` (Phase 1)          | `8082` | _(consumer only, không có REST API/Swagger)_  | -                                   |
+| `lumora-ai-evaluation-service` (Phase 2) | `8083` | `http://localhost:8083/swagger-ui/index.html` | `http://localhost:8083/v3/api-docs` |
 
 Chạy từng service (mỗi service 1 terminal riêng):
 
 ```bash
-mvn spring-boot:run -pl myshop-module-manager
-mvn spring-boot:run -pl myshop-media-service -am
-mvn spring-boot:run -pl myshop-media-worker -am
-mvn spring-boot:run -pl myshop-ai-evaluation-service -am
+mvn spring-boot:run -pl lumora-module-manager
+mvn spring-boot:run -pl lumora-media-service -am
+mvn spring-boot:run -pl lumora-media-worker -am
+mvn spring-boot:run -pl lumora-ai-evaluation-service -am
 ```
 
-> Lưu ý: `myshop-media-service`/`myshop-media-worker` cần `media-postgres` +
-> `media-rabbitmq` đang chạy (xem mục 5); `myshop-ai-evaluation-service` cần
+> Lưu ý: `lumora-media-service`/`lumora-media-worker` cần `media-postgres` +
+> `media-rabbitmq` đang chạy (xem mục 5); `lumora-ai-evaluation-service` cần
 > `ai-postgres` đang chạy — tất cả đã có sẵn trong `docker-compose.yml`.
 
 ## 5) Chạy monitoring stack (Prometheus + Grafana)
@@ -163,7 +173,7 @@ Endpoint prometheus phải trả về text metrics dạng:
 
 1. Mở `http://localhost:9090`
 2. Vào `Status` → `Targets`
-3. Target `myshop-module-manager` và `node` phải ở trạng thái `UP`
+3. Target `lumora-module-manager` và `node` phải ở trạng thái `UP`
 
 ### 8.3 Verify Grafana
 
